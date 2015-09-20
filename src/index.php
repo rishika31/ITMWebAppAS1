@@ -29,7 +29,7 @@
 		echo date('l F j\, Y \- h:i:s A \| ');
 		$epochTime = time();
 		echo $epochTime;
-		echo '<p><a href="http://localhost/rupadhy2_a_as1/src/form.php">Registration</a></p>';
+		echo '<p><a href="form.php">Registration</a></p>';
 	
 	?>
 </body>
