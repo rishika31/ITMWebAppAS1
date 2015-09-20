@@ -1,3 +1,5 @@
+BROWSER SUPPORT: Google Chrome, Firefox
+
 index.php
 - Headline with "Welcome Guest"
 --- page with no GET parameter in the URL should show guest

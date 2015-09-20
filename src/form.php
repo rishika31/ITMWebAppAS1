@@ -74,6 +74,8 @@
 	$isValid = true;
 	$firstName = $lastName = $email = $comments = "";
 	$result = "";
+	$target_dir = "";
+	$target_file = "";
 
 	if ($_SERVER["REQUEST_METHOD"] == "POST") // This if condition determines if the form has been loaded with POST or not
 	{
@@ -94,11 +96,22 @@
 			$emailErr = "* Email is required";
 			$isValid = false;
 		}
+		if(isset($_POST["submit"]) && !empty($_FILES["docUpload"]["name"])) {
+			$target_dir = "uploads/";
+			$target_file = $target_dir . basename($_FILES["docUpload"]["name"]);
+			if (move_uploaded_file($_FILES['docUpload']['tmp_name'], $target_file)) {
+        		// echo "The file ". basename( $_FILES["docUpload"]["name"]). " has been uploaded.";
+    		} 
+    		else {
+       			echo "Sorry, there was an error uploading your file.";
+       			die();
+    		}
+		}
 		
 		if($isValid)
 		{
-			$result = 'You have been successfully registered:<br> First Name: ' . $firstName . ' <br>Last Name: ' . $lastName . ' <br>Email Address: ' . $email;
-			buildMyResults($result);
+			$result = 'You have been successfully registered.<br> First Name: ' . $firstName . ' <br>Last Name: ' . $lastName . ' <br>Email Address: ' . $email;
+			buildMyResults($result, $target_file);
 			die();
 		}
 
@@ -112,8 +125,6 @@
 
     function buildMyForm($firstNameErr, $lastNameErr, $emailErr)
     { 
-
-
     	?>
 	<form name="formRegister" method="post" action=<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?> enctype="multipart/form-data">
 		<!-- $_SERVER is a super global variable. 
@@ -151,34 +162,18 @@
 	
 <?php
 	}
-	function buildMyResults($result)
+	function buildMyResults($result, $target_file)
 	{ 
-    	if(isset($_POST["submit"])) {
-			$target_dir = "uploads/";
-			//$target_file = $target_dir . basename($_FILES['docUpload']['name']);
-			//$target_file = uploads/my_file.txt;
-
-			echo basename($_FILES["docUpload"]["name"]);
-			echo '$target_file:' . $target_file;
-			echo '$target_dir:' . $target_dir;
-
-			// Check if file already exists
-			if (file_exists($target_file)) {
-    			echo "Sorry, file already exists.";
-    			die();
-			}
-			
-			if (move_uploaded_file($_FILES['docUpload']['tmp_name'], $target_file)) {
-        		echo "The file ". basename( $_FILES["docUpload"]["name"]). " has been uploaded.";
-    		} 
-    		else {
-       			echo "Sorry, there was an error uploading your file.";
-    		}
-		}
-
-		?>		
-	  	<label><?php echo isset($result) ? $result : '' ?></label>
-	<?php }    
+		?>
+	  	<label><?php echo isset($result) ? $result : '' ?></label><br>
+	  	<?php 
+	  	if(!empty($target_file)){
+	  	?>
+	  		<br><a href=<?php echo $target_file ?> download>Download</a>
+	  	<?php 
+	  }
+	  	
+	}    
 ?>
 
 </body>
