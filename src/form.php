@@ -69,10 +69,9 @@
 	$firstNameErr = "";
 	$lastNameErr = "";
 	$emailErr = "";
-	$firstName = $lastName = $email =  "";
 	$comments = "";
 	$isValid = true;
-	$firstName = $lastName = $email = $comments = "";
+	$firstName = $lastName = $email = $gender = "";
 	$result = "";
 	$target_dir = "";
 	$target_file = "";
@@ -82,7 +81,7 @@
 		$firstName = TrimAndClean($_POST["txtFirstName"]);
 		$lastName = TrimAndClean($_POST["txtLastName"]);
 		$email = TrimAndClean($_POST["txtEmail"]);
-		$comments = TrimAndClean($_POST["txtComments"]);
+		
 		if(empty($firstName))
 		{
 			$firstNameErr = "* First Name is required";
@@ -111,6 +110,11 @@
 		if($isValid)
 		{
 			$result = 'You have been successfully registered.<br> First Name: ' . $firstName . ' <br>Last Name: ' . $lastName . ' <br>Email Address: ' . $email;
+			$result = $result . (empty($_POST["rdoGender"]) ? '' : '<br>Gender: '.$_POST["rdoGender"]);
+			$result = $result . (empty($_POST["selCourse"]) ? '' : '<br>Course: '.$_POST["selCourse"]);
+			$result = $result . (empty($_POST["txtComments"]) ? '' : '<br>Comments: '.$_POST["txtComments"]);
+			$result = $result . '<br> Submitted: ' .date('j M Y – h:i:s A');
+
 			buildMyResults($result, $target_file);
 			die();
 		}
@@ -143,15 +147,17 @@
 		<!-- isset($_POST['txtFirstName']) ? $_POST['txtFirstName'] : '' ternary operation checks to see if the value of the firstName textbox was already entered
 			or not. If yes, it will retain the value on the POST else it will clear the value
 		 -->
-
-		Gender:
-		<input type="radio" name="rdoGender" value="f">Female
-		<input type="radio" name="rdoGender" value="m">Male
+        
+		Gender: 
+		<input type="radio" name="rdoGender" value="F" <?php if(isset($_POST['rdoGender']) && $_POST['rdoGender'] == "F") echo 'checked="checked"';?>>Female
+		<input type="radio" name="rdoGender" value="M" <?php if(isset($_POST['rdoGender']) && $_POST['rdoGender'] == "M") echo 'checked="checked"';?>>Male
+        
 
 		<br><br>Course:
 		<select name="selCourse">
-			<option value="ITM">ITM</option>
-			<option value="CS">CS</option>
+			<option value="" selected></option>
+			<option value="ITM"<?php if(isset($_POST['selCourse'])=="ITM"){echo "selected='selected'";}?>>ITM</option>
+			<option value="CS"<?php if(isset($_POST['selCourse'])=="CS"){echo "selected='selected'";}?>>CS</option>
 		</select>
 
 	    <br><br>Comments: <textarea name="txtComments"><?php echo isset($_POST['txtComments']) ? $_POST['txtComments'] : '' ?></textarea><br><br>
@@ -170,6 +176,7 @@
 	  	if(!empty($target_file)){
 	  	?>
 	  		<br><a href=<?php echo $target_file ?> download>Download</a>
+
 	  	<?php 
 	  }
 	  	
